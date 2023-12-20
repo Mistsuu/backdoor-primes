@@ -18,31 +18,14 @@ def attack(n, D):
     assert H_D, ValueError(f"Cannot generate the Hilbert Class Polynomial with D={D}!")
 
     # Create curve A, B
-    # Although we're supposed to divide A & B 
-    # by 1728-j in Zn[j] / H_D, we can cheat 
-    # by setting
-    #        R = rand * (1728-j)
-    #
-    # Since A is mutliplied by R^2,
-    #       B is multiplied by R^3,
-    # 
-    # We can just multiply 
-    #       A with (1728-j)
-    #       B with (1728-j)^2
-    # 
-    # This also helps reduce runtime
-    # for scalar multiplication later
-    # since A & B are low-degree :-)
-    R = Zn(randrange(1, n))
-    A = 3*j*R**2*(1728-j)    % H_D
-    B = 2*j*R**3*(1728-j)**2 % H_D
+    R = Zn(randrange(1, n))            # R = rand * (1728-j)
+    A = 3*j*R**2*(1728-j)    % H_D     # removes the need for inversion
+    B = 2*j*R**3*(1728-j)**2 % H_D     # makes A&B low degree -> faster computation.
 
-    # Convert to PARI object
-    # as it has built-in gcd
-    # polynomials -- and it's
-    # fast as well + gives us
-    # error message during 
-    # inversion failed :>
+    # PARI object has built in GCD
+    # function for polynomials.
+    # It's fast & gives us error messages
+    # during inversion fails :>
     pari_H_D = pari.Mod(H_D.change_ring(ZZ), n)
 
     while True:
