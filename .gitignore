@@ -1,0 +1,6 @@
+.vscode
+misc
+ntl
+old
+__pycache__
+phi_files/*.txt
