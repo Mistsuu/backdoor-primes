@@ -3,10 +3,11 @@ from curvexz  import mul_x1_with_bar
 from genprime import gen_backdoor_params
 from hilbert  import hilbert_classpoly_coefs
 
-from curvemul.so.curvemul import mul_x1_ntl
-
 import time
 import re
+
+# NTL supports multithreading!
+from curvemul.so.curvemul import mul_x1_ntl
 
 def attack(n, D):
     # Change to ZZ's sage
@@ -34,16 +35,12 @@ def attack(n, D):
     while True:
         # Create point (x, .)
         x = Znj(randrange(1, n))
-        _1 = Znj(1)
 
         # Multiply (x/1, .) with n
         print('[i] Multiplying point...')
         start = time.time()        
-        # X, Z = mul_x1_with_bar(x, _1, n, A, B, H_D)
-        mul_x1_ntl(x, n, A, B, H_D)
-
+        X, Z = mul_x1_ntl(x, n, A, B, H_D)
         print(f'[i] Takes {time.time() - start} seconds.')
-        exit(-1)
 
         # It's likely that Z is equivalent to 0
         # mod p (but not mod q), hence j is the 
@@ -86,7 +83,7 @@ def attack(n, D):
 
     
 if __name__ == '__main__':
-    D, p, q, n = gen_backdoor_params(upper_D=60_000)
+    D, p, q, n = gen_backdoor_params(upper_D=1_000_000)
 
     print(f'[i] Testing with case: ')
     print(f'{D = }')

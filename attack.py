@@ -5,6 +5,9 @@ from hilbert  import hilbert_classpoly_coefs
 
 import re
 
+# NTL supports multithreading!
+from curvemul.so.curvemul import mul_x1_ntl
+
 def attack(n, D):
     # Change to ZZ's sage
     n = ZZ(n)
@@ -29,10 +32,9 @@ def attack(n, D):
     while True:
         # Create point (x, .)
         x = Znj(randrange(1, n))
-        _1 = Znj(1)
 
         # Multiply (x/1, .) with n
-        X, Z = mul_x1(x, _1, n, A, B, H_D)
+        X, Z = mul_x1_ntl(x, n, A, B, H_D)
 
         # Use resulant method 
         # for low degree H_D.
