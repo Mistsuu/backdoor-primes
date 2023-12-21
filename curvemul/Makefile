@@ -3,7 +3,7 @@ BUILD = release
 
 # Settings for folders
 OBJECT_DIR  = obj
-LIBRARY_DIR = src ./libs/progressbar/include
+LIBRARY_DIR = src libs/progressbar/include/progressbar
 SOURCE_DIR  = src
 SHARED_DIR  = so
 ADDITIONAL_OBJECTS = libs/progressbar/progressbar.o libs/progressbar/statusbar.o 

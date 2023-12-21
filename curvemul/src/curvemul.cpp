@@ -1,5 +1,6 @@
 #include "curvemul.h"
 #include "ex_assert.h"
+#include "progressbar.h"
 
 using namespace std;
 using namespace NTL;
@@ -135,6 +136,7 @@ void mul_x1(
     ZZ_pX  X0, ZZ     k      // P, k
 )
 {
+
     R[0] = X0; R[1] = _1;           // R[0,1] = P
     dbl_xz(R[2], R[3], X0, _1);     // R[2,3] = 2P
 
@@ -142,6 +144,8 @@ void mul_x1(
     long l;
     long b;
     l = NumBits(k);
+
+    progressbar *bar = progressbar_new("Loading", l-2);
     for (i = 2; i <= l; ++i) {
         b = bit(k, l-i);
         add_xz(
@@ -154,9 +158,12 @@ void mul_x1(
             R[2*b], R[2*b+1],
             R[2*b], R[2*b+1]
         );
+        progressbar_inc(bar);
     }
+    progressbar_finish(bar);
 
     Xk = R[0]; Zk = R[1];
+
 }
 
 void user_interrupt_handler(
