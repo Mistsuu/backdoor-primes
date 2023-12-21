@@ -16,7 +16,8 @@ void curveinit(
     const char* A_str,
     const char* B_str,
     const char* H_D_str,
-    const char* n_str
+    const char* n_str,
+    int n_threads
 );
 
 void curvemul(

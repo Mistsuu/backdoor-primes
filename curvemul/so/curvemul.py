@@ -17,12 +17,13 @@ void curveinit(
     const char* n_str
 );
 """
-curveinit = libcurvemul._Z9curveinitPKcS0_S0_S0_
+curveinit = libcurvemul._Z9curveinitPKcS0_S0_S0_i
 curveinit.argtypes = [
     ctypes.c_char_p,
     ctypes.c_char_p,
     ctypes.c_char_p,
     ctypes.c_char_p,
+    ctypes.c_int,
 ]
 
 """
@@ -61,7 +62,7 @@ def tostr(f):
             fstr += ' '
     return fstr + ']'
 
-def mul_x1_ntl(X0, k, A, B, H_D): # TODO: Add thread
+def mul_x1_ntl(X0, k, A, B, H_D, n_threads=4): # TODO: Add thread
     # Extract n from H_D
     n = H_D.base_ring().cardinality()
 
@@ -80,7 +81,8 @@ def mul_x1_ntl(X0, k, A, B, H_D): # TODO: Add thread
         A_str,
         B_str,
         H_D_str,
-        n_str
+        n_str,
+        int(n_threads)
     )
 
     curvemul(
@@ -91,14 +93,24 @@ def mul_x1_ntl(X0, k, A, B, H_D): # TODO: Add thread
     )
 
     # Extract values!
-    print(Xk_str.value)
-    print(Zk_str.value)
+    assert \
+        Xk_str.value[ 0] == ord('[') and \
+        Xk_str.value[-1] == ord(']') and \
+        Zk_str.value[ 0] == ord('[') and \
+        Zk_str.value[-1] == ord(']'), \
+            ValueError('Error in parsing string!')
+    
+
+    Xk_arr = list(map(int, Xk_str.value[1:-1].decode().split(' ')))
+    Zk_arr = list(map(int, Zk_str.value[1:-1].decode().split(' ')))
 
     # Free memory
     curvefree(
         Xk_str,
         Zk_str
     )
+
+    return H_D.parent()(Xk_arr), H_D.parent()(Zk_arr)
 
 if __name__ == '__main__':
     pass

@@ -20,7 +20,8 @@ void curveinit(
     const char* A_str,
     const char* B_str,
     const char* H_D_str,
-    const char* n_str
+    const char* n_str,
+    int n_threads
 ) 
 {
     n = conv<ZZ>(n_str);
@@ -31,6 +32,7 @@ void curveinit(
     B = ZZ_pXMultiplier(conv<ZZ_pX>(B_str), H_D);
     _1 = conv<ZZ_pX>("[1]");
 
+    SetNumThreads((long)n_threads);
     is_curve_init = true;
 }
 
