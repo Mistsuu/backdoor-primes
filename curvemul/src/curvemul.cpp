@@ -16,13 +16,15 @@ ZZ_pXModulus    H_D;    // Curve's modulus
 ZZ              n;      // Modulus of Zn
 ZZ_pX           _1;     // Fast cache for number 1.
 bool            is_curve_init = false;
+int             enable_progbar = 0;
 
 void curveinit(
     const char* A_str,
     const char* B_str,
     const char* H_D_str,
     const char* n_str,
-    int n_threads
+    int n_threads,
+    int show_progress_bar
 ) 
 {
     n = conv<ZZ>(n_str);
@@ -34,6 +36,7 @@ void curveinit(
     _1 = conv<ZZ_pX>("[1]");
 
     SetNumThreads((long)n_threads);
+    enable_progbar = show_progress_bar;
     is_curve_init = true;
 }
 
@@ -145,7 +148,38 @@ void mul_x1(
     long b;
     l = NumBits(k);
 
-    progressbar *bar = progressbar_new("Loading", l-2);
+    for (i = 2; i <= l; ++i) {
+        b = bit(k, l-i);
+        add_xz(
+            R[2-2*b], R[3-2*b], 
+            R[0], R[1], 
+            R[2], R[3], 
+            X0
+        );
+        dbl_xz(
+            R[2*b], R[2*b+1],
+            R[2*b], R[2*b+1]
+        );
+    }
+
+    Xk = R[0]; Zk = R[1];
+}
+
+void mul_x1_with_bar(
+    ZZ_pX& Xk, ZZ_pX& Zk,    // P*k
+    ZZ_pX  X0, ZZ     k      // P, k
+)
+{
+
+    R[0] = X0; R[1] = _1;           // R[0,1] = P
+    dbl_xz(R[2], R[3], X0, _1);     // R[2,3] = 2P
+
+    long i;
+    long l;
+    long b;
+    l = NumBits(k);
+
+    progressbar *bar = progressbar_new("Processing", l-2);
     for (i = 2; i <= l; ++i) {
         b = bit(k, l-i);
         add_xz(
@@ -193,7 +227,11 @@ void curvemul(
 
     X0 = conv<ZZ_pX>(X0_str);
     k = conv<ZZ>(k_str);
-    mul_x1(Xk, Zk, X0, k);
+
+    if (enable_progbar)
+        mul_x1_with_bar(Xk, Zk, X0, k);
+    else
+        mul_x1(Xk, Zk, X0, k);
 
     // Convert output back to char*
     stringstream ss;

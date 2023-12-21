@@ -17,8 +17,9 @@ void curveinit(
     const char* B_str,
     const char* H_D_str,
     const char* n_str,
-    int n_threads
-);
+    int n_threads,
+    int show_progress_bar
+) ;
 
 void curvemul(
     char** pXk_str, char** pZk_str, // These should not be init-ed

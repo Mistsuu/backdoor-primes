@@ -39,7 +39,7 @@ def attack(n, D):
         # Multiply (x/1, .) with n
         print('[i] Multiplying point...')
         start = time.time()        
-        X, Z = mul_x1_ntl(x, n, A, B, H_D)
+        X, Z = mul_x1_ntl(x, n, A, B, H_D, show_progress_bar=True)
         print(f'[i] Takes {time.time() - start} seconds.')
 
         # It's likely that Z is equivalent to 0

@@ -14,15 +14,18 @@ void curveinit(
     const char* A_str,
     const char* B_str,
     const char* H_D_str,
-    const char* n_str
+    const char* n_str,
+    int n_threads,
+    int show_progress_bar
 );
 """
-curveinit = libcurvemul._Z9curveinitPKcS0_S0_S0_i
+curveinit = libcurvemul._Z9curveinitPKcS0_S0_S0_ii
 curveinit.argtypes = [
     ctypes.c_char_p,
     ctypes.c_char_p,
     ctypes.c_char_p,
     ctypes.c_char_p,
+    ctypes.c_int,
     ctypes.c_int,
 ]
 
@@ -62,7 +65,7 @@ def tostr(f):
             fstr += ' '
     return fstr + ']'
 
-def mul_x1_ntl(X0, k, A, B, H_D, n_threads=4): # TODO: Add thread
+def mul_x1_ntl(X0, k, A, B, H_D, n_threads=4, show_progress_bar=False):
     # Extract n from H_D
     n = H_D.base_ring().cardinality()
 
@@ -82,7 +85,8 @@ def mul_x1_ntl(X0, k, A, B, H_D, n_threads=4): # TODO: Add thread
         B_str,
         H_D_str,
         n_str,
-        int(n_threads)
+        int(n_threads),
+        int(show_progress_bar)
     )
 
     curvemul(
