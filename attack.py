@@ -1,4 +1,4 @@
-from sage.all import Zmod, randrange, gcd, ZZ, pari
+from sage.all import Zmod, randrange, gcd, ZZ, pari, ntl
 from curvexz  import mul_x1
 from genprime import gen_backdoor_params
 from hilbert  import hilbert_classpoly_coefs
@@ -22,10 +22,8 @@ def attack(n, D):
     A = 3*j*R**2*(1728-j)    % H_D     # removes the need for inversion
     B = 2*j*R**3*(1728-j)**2 % H_D     # makes A&B low degree -> faster computation.
 
-    # PARI object has built in GCD
-    # function for polynomials.
-    # It's fast & gives us error messages
-    # during inversion fails :>
+    # PARI object has built-in support
+    # for GCD of polynomials in Zn[X].
     pari_H_D = pari.Mod(H_D.change_ring(ZZ), n)
 
     while True:
@@ -36,29 +34,17 @@ def attack(n, D):
         # Multiply (x/1, .) with n
         X, Z = mul_x1(x, _1, n, A, B, H_D)
 
-        # It's likely that Z is equivalent to 0
-        # mod p (but not mod q), hence j is the 
-        # root of Z(j) mod p, but since it's also
-        # root of H_D(j) mod p,
-
-        # For low-degree H_D polynomials, we can use
-        # resultant method.
+        # Use resulant method 
+        # for low degree H_D.
         if H_D.degree() < 2:
             kp = int(H_D.resultant(Z))
             if 1 < (p := (gcd(kp, n))) < n:
                 return p
             continue
-
-        # But it's also so likely that
-        # gcd these 2 polynomials would arrive
-        # into an error, where we try to invert
-        # a zero-divisor of n! Which then we
-        # can read from error message to derive p.
+        
+        # For high-degree H_D, use GCD
+        # since it's faster.
         pari_Z = pari.Mod(Z.change_ring(ZZ), n)
-
-        # This way it's used for high degree
-        # H_D, since it's much much faster than
-        # the resultant method.
         try:
             pari.gcd(pari_H_D, pari_Z)
         except Exception as err:
