@@ -25,4 +25,4 @@ curvemul/so/*
 !curvemul/so/*.py
 !curvemul/src
 !curvemul/Makefile
-!curvemul/progressbar
+!curvemul/libs
