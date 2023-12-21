@@ -5,6 +5,8 @@
 #include <NTL/ZZX.h>
 #include <NTL/BasicThreadPool.h>
 
+#include "curvemul.h"
+
 using namespace std;
 using namespace NTL;
 
