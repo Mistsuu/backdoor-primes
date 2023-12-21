@@ -16,7 +16,7 @@ ZZ              n;      // Modulus of Zn
 ZZ_pX           _1;     // Fast cache for number 1.
 bool            is_curve_init = false;
 
-void init_curve(
+void curveinit(
     const char* A_str,
     const char* B_str,
     const char* H_D_str,
@@ -165,7 +165,7 @@ void user_interrupt_handler(
     exit(-1);
 }
 
-void curvemul_interface(
+void curvemul(
     char** pXk_str, char** pZk_str, // These should not be init-ed
     char*  X0_str,  char*  k_str
 )
@@ -173,11 +173,6 @@ void curvemul_interface(
     assertf(
         is_curve_init,
         "Curve is not initialized! Please call init_curve first!"
-    );
-
-    assertf(
-        !(*pXk_str) && !(*pZk_str),
-        "pXk_str and pZk_str parameters must point to NULL!"
     );
 
     // Register user's interrupt :)
@@ -208,4 +203,13 @@ void curvemul_interface(
 
     *pZk_str = (char*)malloc(tmp.length() + 1);
     strcpy(*pZk_str, tmp.c_str());
+}
+
+void curvefree(
+    char* Xk_str,
+    char* Zk_str
+)
+{
+    free(Xk_str);
+    free(Zk_str);
 }
