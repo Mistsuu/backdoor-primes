@@ -3,19 +3,23 @@ BUILD = release
 
 # Settings for folders
 OBJECT_DIR  = obj
-LIBRARY_DIR = src
+LIBRARY_DIR = src ./libs/progressbar/include
 SOURCE_DIR  = src
 SHARED_DIR  = so
+ADDITIONAL_OBJECTS = libs/progressbar/progressbar.o libs/progressbar/statusbar.o 
+
+# Automatic modification here
+LIBRARY_CFG = $(patsubst %, -I%, $(LIBRARY_DIR))
 
 # Compilers options
 CC              = g++
-CFLAGS.release  = -I$(LIBRARY_DIR) -O2
-CFLAGS.allwarn  = -I$(LIBRARY_DIR) -O2 -Wall -Wextra -Wpedantic
-CFLAGS.memcheck = -I$(LIBRARY_DIR) -O0 -ggdb -fsanitize=address
-CFLAGS.verbose  = -I$(LIBRARY_DIR) -O2 -ggdb -D DLOG_VERBOSE=1
-CFLAGS.static   = -I$(LIBRARY_DIR) -O2 -static
+CFLAGS.release  = $(LIBRARY_CFG) -O2
+CFLAGS.allwarn  = $(LIBRARY_CFG) -O2 -Wall -Wextra -Wpedantic
+CFLAGS.memcheck = $(LIBRARY_CFG) -O0 -ggdb -fsanitize=address
+CFLAGS.verbose  = $(LIBRARY_CFG) -O2 -ggdb -D DLOG_VERBOSE=1
+CFLAGS.static   = $(LIBRARY_CFG) -O2 -static
 CFLAGS          = $(CFLAGS.$(BUILD))
-LIBS            = -lntl
+LIBS            = -lntl -lncurses
 
 # Requirements and stuffs
 FULLDEPS := $(shell find $(LIBRARY_DIR) -name '*.h')
@@ -25,7 +29,7 @@ FULLOBJS := $(shell find $(SOURCE_DIR) -name '*.cpp' | sed -e "s/^$(SOURCE_DIR)/
 default: test libcurvemul
 
 # For creating a user interface binary
-test: $(FULLOBJS) $(OBJECT_DIR)/test.o
+test: $(FULLOBJS) $(OBJECT_DIR)/test.o $(ADDITIONAL_OBJECTS)
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 	strip test
 
@@ -39,12 +43,17 @@ $(OBJECT_DIR)/%.o: $(SOURCE_DIR)/%.cpp $(FULLDEPS) | $(OBJECT_DIR)
 .PHONY: clean libcurvemul
 clean:
 	rm -f $(SOURCE_DIR)/*.o $(OBJECT_DIR)/*.o $(SHARED_DIR)/*.so ./test
+	cd libs/progressbar && make clean
 
 # For creating shared library :)
-libcurvemul: $(SHARED_DIR)/libcurvemul.so
+libcurvemul: $(SHARED_DIR)/libcurvemul.so $(ADDITIONAL_OBJECTS)
 
-$(SHARED_DIR)/libcurvemul.so: $(FULLOBJS) | $(SHARED_DIR)
+$(SHARED_DIR)/libcurvemul.so: $(FULLOBJS) $(ADDITIONAL_OBJECTS) | $(SHARED_DIR)
 	$(CC) -shared -o $@ $^ $(CFLAGS) $(LIBS)
 
 $(SHARED_DIR):
 	mkdir -p $(SHARED_DIR)
+
+# ============================= customize for external libraries ==================================
+libs/progressbar/%.o:
+	cd libs/progressbar && make
