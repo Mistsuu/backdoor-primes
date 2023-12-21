@@ -1,12 +1,12 @@
 import os
 import sys
-sys.path.append(os.path.dirname(__file__))
 
-assert os.path.exists('./libcurvemul.so'), \
+libcurvemul_path = os.path.join(os.path.dirname(__file__), 'libcurvemul.so')
+assert os.path.exists(libcurvemul_path), \
     ValueError("You need to compile libcurvemul.so first!")
 
 import ctypes
-libcurvemul = ctypes.CDLL('./libcurvemul.so')
+libcurvemul = ctypes.CDLL(libcurvemul_path)
 
 # ============================== Exposed functions ==============================
 """
@@ -54,14 +54,17 @@ curvefree.argtypes = [
 # ============================== API Call ==============================
 def tostr(f):
     fstr = '['
-    flen = len(f)
+    flen = f.degree() + 1
     for i in range(flen):
         fstr += f'{f[i]}'
         if i < flen - 1:
             fstr += ' '
     return fstr + ']'
 
-def mul(X0, k, A, B, H_D, n):
+def mul_x1_ntl(X0, k, A, B, H_D): # TODO: Add thread
+    # Extract n from H_D
+    n = H_D.base_ring().cardinality()
+
     # Prepare parameters
     A_str = tostr(A).encode() + b'\0'
     B_str = tostr(B).encode() + b'\0'

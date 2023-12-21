@@ -51,10 +51,10 @@ ZZ_pX T13;
 ZZ_pX T14;
 
 void add_xz(
-    ZZ_pX X5, ZZ_pX Z5, // P+Q
-    ZZ_pX X2, ZZ_pX Z2, // P
-    ZZ_pX X3, ZZ_pX Z3, // Q
-    ZZ_pX X1            // P-Q
+    ZZ_pX& X5, ZZ_pX& Z5, // P+Q
+    ZZ_pX X2, ZZ_pX Z2,   // P
+    ZZ_pX X3, ZZ_pX Z3,   // Q
+    ZZ_pX X1              // P-Q
 )
 {
     // T1 = X2*X3
@@ -90,8 +90,8 @@ void add_xz(
 }
 
 void dbl_xz(
-    ZZ_pX X3, ZZ_pX Z3, // 2P
-    ZZ_pX X1, ZZ_pX Z1  // P
+    ZZ_pX& X3, ZZ_pX& Z3, // 2P
+    ZZ_pX X1, ZZ_pX Z1    // P
 )
 {
     // T1 = X1**2
@@ -129,8 +129,8 @@ void dbl_xz(
 ZZ_pX R[4];
 
 void mul_x1(
-    ZZ_pX Xk, ZZ_pX Zk,
-    ZZ_pX X0, ZZ k
+    ZZ_pX& Xk, ZZ_pX& Zk,    // P*k
+    ZZ_pX  X0, ZZ     k      // P, k
 )
 {
     R[0] = X0; R[1] = _1;           // R[0,1] = P
@@ -190,6 +190,7 @@ void curvemul(
     stringstream ss;
     string tmp;
 
+    ss.str(std::string());
     ss.clear();
     ss << Xk;
     tmp = ss.str();
@@ -197,6 +198,7 @@ void curvemul(
     *pXk_str = (char*)malloc(tmp.length() + 1);
     strcpy(*pXk_str, tmp.c_str());
 
+    ss.str(std::string());
     ss.clear();
     ss << Zk;
     tmp = ss.str();
