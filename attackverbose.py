@@ -3,6 +3,8 @@ from curvexz  import mul_x1_with_bar
 from genprime import gen_backdoor_params
 from hilbert  import hilbert_classpoly_coefs
 
+from curvemul.so.curvemul import mul_x1_ntl
+
 import time
 import re
 
@@ -37,8 +39,11 @@ def attack(n, D):
         # Multiply (x/1, .) with n
         print('[i] Multiplying point...')
         start = time.time()        
-        X, Z = mul_x1_with_bar(x, _1, n, A, B, H_D)
+        # X, Z = mul_x1_with_bar(x, _1, n, A, B, H_D)
+        mul_x1_ntl(x, n, A, B, H_D)
+
         print(f'[i] Takes {time.time() - start} seconds.')
+        exit(-1)
 
         # It's likely that Z is equivalent to 0
         # mod p (but not mod q), hence j is the 
