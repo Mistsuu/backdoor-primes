@@ -4,11 +4,6 @@
 # and whatnot
 misc
 
-# i was looking at the source
-# code of ntl to see if i can
-# optimize something
-ntl
-
 # python's cache
 __pycache__
 
@@ -20,3 +15,7 @@ phi_files/*.txt
 # hilbert polynomial files 
 # are also large :-v
 H_*.txt
+
+# remove all "curvemul" compiled
+# binaries
+curvemul
