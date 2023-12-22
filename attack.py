@@ -1,5 +1,4 @@
 from sage.all import Zmod, randrange, gcd, ZZ, pari, ntl
-from curvexz  import mul_x1
 from genprime import gen_backdoor_params
 from hilbert  import hilbert_classpoly_coefs
 
