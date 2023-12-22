@@ -8,7 +8,7 @@ import re
 # NTL supports multithreading!
 from curvemul.so.curvemul import mul_x1_ntl
 
-def attack(n, D):
+def attack(n, D, n_threads = 4):
     # Change to ZZ's sage
     n = ZZ(n)
     D = ZZ(D)
@@ -34,7 +34,8 @@ def attack(n, D):
         x = Znj(randrange(1, n))
 
         # Multiply (x/1, .) with n
-        X, Z = mul_x1_ntl(x, n, A, B, H_D)
+        X, Z = mul_x1_ntl(x, n, A, B, H_D,
+                          n_threads=n_threads)
 
         # Use resulant method 
         # for low degree H_D.

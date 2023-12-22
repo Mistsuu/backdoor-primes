@@ -9,7 +9,7 @@ import re
 # NTL supports multithreading!
 from curvemul.so.curvemul import mul_x1_ntl
 
-def attack(n, D):
+def attack(n, D, n_threads = 4):
     # Change to ZZ's sage
     n = ZZ(n)
     D = ZZ(D)
@@ -39,7 +39,9 @@ def attack(n, D):
         # Multiply (x/1, .) with n
         print('[i] Multiplying point...')
         start = time.time()        
-        X, Z = mul_x1_ntl(x, n, A, B, H_D, show_progress_bar=True)
+        X, Z = mul_x1_ntl(x, n, A, B, H_D, 
+                          n_threads=n_threads,
+                          show_progress_bar=True)
         print(f'[i] Takes {time.time() - start} seconds.')
 
         # It's likely that Z is equivalent to 0
@@ -83,7 +85,7 @@ def attack(n, D):
 
     
 if __name__ == '__main__':
-    D, p, q, n = gen_backdoor_params(upper_D=1_000_000)
+    D, p, q, n = gen_backdoor_params(upper_D=20_000_000_000)
 
     print(f'[i] Testing with case: ')
     print(f'{D = }')
