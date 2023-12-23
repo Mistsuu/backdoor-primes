@@ -39,6 +39,7 @@ attack(
 
 - `libntl-dev`: Tested & worked with version `11.5.1-1`.
 - `sagemath`: Tested & worked with version `9.5`.
+- Package `hashlib` in `Python`.
   
 ## Run `setup`
 
