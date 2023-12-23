@@ -36,6 +36,7 @@ attack(
 ## Prerequisites
 
 - `sagemath`: Tested & worked with version `9.5`.
+- Package `hashlib` in `Python`.
   
 To run `attackverbose.py`, you also need to install `tqdm` package in `Python`.
 
