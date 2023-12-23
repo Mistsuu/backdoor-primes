@@ -6,7 +6,7 @@ OBJECT_DIR  = obj
 LIBRARY_DIR = src libs/progressbar/include/progressbar
 SOURCE_DIR  = src
 SHARED_DIR  = so
-ADDITIONAL_OBJECTS = libs/progressbar/progressbar.o libs/progressbar/statusbar.o 
+EXTERNAL_OBJS = libs/progressbar/libprogressbar.so
 
 # Automatic modification here
 LIBRARY_CFG = $(patsubst %, -I%, $(LIBRARY_DIR))
@@ -29,7 +29,7 @@ FULLOBJS := $(shell find $(SOURCE_DIR) -name '*.cpp' | sed -e "s/^$(SOURCE_DIR)/
 default: test libcurvemul
 
 # For creating a user interface binary
-test: $(FULLOBJS) $(OBJECT_DIR)/test.o $(ADDITIONAL_OBJECTS)
+test: $(FULLOBJS) $(OBJECT_DIR)/test.o $(EXTERNAL_OBJS)
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 	strip test
 
@@ -46,14 +46,15 @@ clean:
 	cd libs/progressbar && make clean
 
 # For creating shared library :)
-libcurvemul: $(SHARED_DIR)/libcurvemul.so $(ADDITIONAL_OBJECTS)
+libcurvemul: $(SHARED_DIR)/libcurvemul.so $(EXTERNAL_OBJS)
 
-$(SHARED_DIR)/libcurvemul.so: $(FULLOBJS) $(ADDITIONAL_OBJECTS) | $(SHARED_DIR)
+$(SHARED_DIR)/libcurvemul.so: $(FULLOBJS) $(EXTERNAL_OBJS) | $(SHARED_DIR)
 	$(CC) -shared -o $@ $^ $(CFLAGS) $(LIBS)
 
 $(SHARED_DIR):
 	mkdir -p $(SHARED_DIR)
 
 # ============================= customize for external libraries ==================================
-libs/progressbar/%.o:
+$(EXTERNAL_OBJS):
+    # Builiding for libprogressbar
 	cd libs/progressbar && make
