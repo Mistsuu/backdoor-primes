@@ -15,6 +15,7 @@ phi_files/*.txt
 # hilbert polynomial files 
 # are also large :-v
 H_*.txt
+hilbertout
 
 # remove all "curvemul" compiled
 # binaries
