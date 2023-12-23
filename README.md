@@ -2,6 +2,9 @@
 
 Factor composite `n=p*q`, with `p` in the form `DV^2 + 1`, where `D` is a non-square.
 
+
+Based on the code of [https://github.com/cryptolu/primes-backdoor], with some modifications to ensure we can run the algorithm for `D ~ 2^32` in a reasonable amount of time and space.
+
 ## Quick Usages
 ```py
 
