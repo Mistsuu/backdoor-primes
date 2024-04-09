@@ -10,7 +10,7 @@ cd ..
 
 # Setup folder to output
 # hilbert polynomials
-mkdir -p hibertout
+mkdir -p hilbertout
 
 # Clone submodule in case you didn't do it...
 git submodule update --init --recursive

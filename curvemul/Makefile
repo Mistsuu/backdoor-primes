@@ -57,4 +57,4 @@ $(SHARED_DIR):
 # ============================= customize for external libraries ==================================
 $(EXTERNAL_OBJS):
     # Builiding for libprogressbar
-	cd libs/progressbar && make
+	cd libs/progressbar && make CC=gcc LDLIBS="-lncurses -ltermcap"
