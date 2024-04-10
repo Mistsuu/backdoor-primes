@@ -10,4 +10,4 @@ cd ..
 
 # Setup folder to output
 # hilbert polynomials
-mkdir -p hibertout
+mkdir -p hilbertout
